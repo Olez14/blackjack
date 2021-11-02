@@ -53,58 +53,59 @@ def getPlayerScore(cardsTable):
     return score
 
 def processDealerCard():
-    if getPlayerScore(dealerCards) <= 16:                # Zakładamy, że krupier przy około 16 ma szansę jeszcze na wygraną
-        randomCard = random.randint(0, len(cards) - 1)
-        dealerCards.append(keysOfCards[randomCard])
+    if not isDealerShouldStop():                # Zakładamy, że krupier przy około 16 ma szansę jeszcze na wygraną
+        addPlayerRandomCard(dealerCards)
         print("Karty krupiera: ", getDealerCardsAsString(dealerCards))
         return True
     else:
         return False
-def isDealerStopPlaying():
+
+def isDealerShouldStop():
     if getPlayerScore(dealerCards) <= 16:                # Zakładamy, że krupier przy około 16 ma szansę jeszcze na wygraną
         return False
     else:
         return True
 
+def addPlayerRandomCard(playerCards):
+    keysOfCards = list(cards.keys())
+    randomCard = random.randint(0, len(keysOfCards) - 1)
+    playerCards.append(keysOfCards[randomCard])
 
 # Losowanie 2 kart dla gracza i krupiera
-keysOfCards = list(cards.keys())
-randomCard1 = random.randint(0, len(cards)-1)
-randomCard2 = random.randint(0, len(cards)-1)
-playerCards.append(keysOfCards[randomCard1])
-playerCards.append(keysOfCards[randomCard2])
+addPlayerRandomCard(playerCards)
+addPlayerRandomCard(playerCards)
 
-randomCard1 = random.randint(0, len(cards)-1)
-randomCard2 = random.randint(0, len(cards)-1)
-dealerCards.append(keysOfCards[randomCard1])
-dealerCards.append(keysOfCards[randomCard2])
+addPlayerRandomCard(dealerCards)
+addPlayerRandomCard(dealerCards)
 
 print("Twoje karty: ",getCardsAsString(playerCards), "Lacznie:", getPlayerScore(playerCards))
 print("Karty krupiera: ",getDealerCardsAsString(dealerCards))
 
-while(getPlayerScore(playerCards)<21 or not isDealerStopPlaying()):
+while(getPlayerScore(playerCards)<21 or not isDealerShouldStop()):
     playerChoise = input("Dobierz kartę[1] lub pozostań[2]... ")
     if playerChoise == "1":
-        randomCard = random.randint(0, len(cards) - 1)
-        playerCards.append(keysOfCards[randomCard])
+        addPlayerRandomCard(playerCards)
         print("Twoje karty: ", getCardsAsString(playerCards), "Lacznie:", getPlayerScore(playerCards))
         processDealerCard()
     else:
-        while(not isDealerStopPlaying()):
+        while(not isDealerShouldStop()):
             processDealerCard()
         break
+
 print("Karty krupiera:",getCardsAsString(dealerCards), "Lacznie:", getPlayerScore(dealerCards))
+
 
 if getPlayerScore(playerCards) == getPlayerScore(dealerCards):
     print("Remis! Nikt nie wygrał!")
-else:
-    if (getPlayerScore(playerCards) > getPlayerScore(dealerCards) and getPlayerScore(playerCards) <= 21 and getPlayerScore(dealerCards) <= 21):
-        print("Wygrałes!")
-    else:
-        if getPlayerScore(playerCards) < getPlayerScore(dealerCards) and getPlayerScore(playerCards) > 21 and getPlayerScore(dealerCards) > 21:
-            print("Wygrałes!")
-        else:
-            if getPlayerScore(dealerCards) > 21 and  getPlayerScore(playerCards) <= 21:
-                print("Wygrałes!")
-            else:
-                print("Przegałeś... Krupier wygrał")
+    exit()
+if (getPlayerScore(playerCards) > getPlayerScore(dealerCards) and getPlayerScore(playerCards) <= 21 and getPlayerScore(dealerCards) <= 21):
+     print("Wygrałes!")
+     exit()
+if getPlayerScore(playerCards) < getPlayerScore(dealerCards) and getPlayerScore(playerCards) > 21 and getPlayerScore(dealerCards) > 21:
+     print("Wygrałes!")
+     exit()
+if getPlayerScore(dealerCards) > 21 and  getPlayerScore(playerCards) <= 21:
+    print("Wygrałes!")
+    exit()
+print("Przegałeś... Krupier wygrał")
+exit()
